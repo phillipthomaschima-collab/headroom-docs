@@ -178,3 +178,93 @@ Run `config` at the `Max>` prompt to re-enter your API key or switch providers.
 ```bash
 PYENV_VERSION=3.11.7 pip uninstall headroom
 ```
+
+---
+
+## Repository Contents
+
+This repository tracks the development environment configuration alongside the headroom documentation.
+
+| File | Description |
+|------|-------------|
+| `headroom-README.md` | This file — headroom/max install & usage guide |
+| `CLAUDE.md` | Claude Code behavioral rules, swarm config, and MCP tool reference |
+| `AGENTS.md` | Codex agent environment context and active project summary |
+| `.mcp.json` | MCP server configuration (claude-flow v3, hierarchical-mesh topology) |
+| `.npmrc` | npm settings (`ignore-scripts=true`) |
+| `.gitconfig` | Git user configuration |
+| `.zshrc` | Zsh shell environment (PATH, aliases, pyenv init) |
+| `.zprofile` | Zsh login profile |
+| `.semgrepignore` | Semgrep static analysis ignore patterns |
+| `.gitignore` | Excludes credentials, caches, and unrelated project directories |
+
+### What is excluded
+
+The `.gitignore` explicitly excludes:
+- **Credentials**: `.env`, `.ssh/`, `.aws/`, `.netrc`
+- **Session state**: `.claude.json`, `.zsh_history`
+- **Large runtimes**: `.pyenv/`, `.npm/`, `.ollama/`, `.cache/`
+- **App data**: `.docker/`, `.warp/`, `.BurpSuite/`, `.n8n/`
+- **macOS system**: `.DS_Store`, `Library/`, `Desktop/`, etc.
+- **Other projects**: `autoresearch-mlx/`, `radius360/`, `vorim-project/`, etc.
+
+---
+
+## Skills Setup
+
+[skills](https://skills.sh) is a package manager for AI agent skill prompts. It was installed alongside headroom to manage cybersecurity skills for Claude Code.
+
+### Installation
+
+```bash
+brew install skills
+skills --version   # 1.5.14
+```
+
+### Installed skill packages
+
+```bash
+# 817 cybersecurity skills from mukul975/Anthropic-Cybersecurity-Skills
+skills add mukul975/Anthropic-Cybersecurity-Skills -g -y
+
+# List all installed skills
+skills ls -g
+```
+
+### Using a skill with Claude Code
+
+```bash
+# Pipe a skill prompt directly to claude
+skills use ~/.agents/skills/<skill-name> | claude --print "<your question>"
+
+# Example
+skills use ~/.agents/skills/analyzing-threat-actor-ttps-with-mitre-attack \
+  | claude --print "Summarise how to map threat actor TTPs using MITRE ATT&CK"
+```
+
+> **Note:** If `ANTHROPIC_API_KEY` is set in your shell to an invalid value, the pipe syntax will fail with "Invalid API key". Remove the export from `~/.zshrc` and run `unset ANTHROPIC_API_KEY` in the current session to use your claude.ai login instead.
+
+### Finding skills
+
+```bash
+skills find                          # interactive search
+skills find "threat intelligence"    # keyword search
+skills ls -g | grep -i "vuln"        # filter installed skills
+```
+
+---
+
+## Environment Summary
+
+| Component | Version / Detail |
+|-----------|------------------|
+| OS | macOS (arm64) |
+| Shell | zsh 5.9 |
+| Python (active) | 3.11.7 via pyenv |
+| Node.js | 25.8.1 |
+| headroom | 0.2.7 (patched for Python 3.11) |
+| skills | 1.5.14 |
+| Claude Code | 2.1.187 |
+| gh CLI | 2.91.0 |
+| Installed skill packages | mukul975/Anthropic-Cybersecurity-Skills (817 skills) |
+| Skills target agent | Claude Code, Codex, GitHub Copilot, Warp |
