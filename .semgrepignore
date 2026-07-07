@@ -1,0 +1,20 @@
+# Exclude Python virtual environments and stdlib installations
+.pyenv/
+venv/
+.venv/
+env/
+__pycache__/
+
+# Exclude macOS system Python packages
+Library/
+
+# Exclude VS Code extensions (third-party code)
+.vscode/extensions/
+
+# Exclude project virtual environments
+Documents/My Work/venv/
+
+# Exclude package build/cache directories
+*.egg-info/
+dist/
+build/

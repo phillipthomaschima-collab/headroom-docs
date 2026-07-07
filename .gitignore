@@ -1,0 +1,64 @@
+# Credentials & secrets
+.env
+.env.*
+.ssh/
+.aws/
+.gnupg/
+.netrc
+
+# Claude / agent session state
+.claude.json
+.claude/projects/
+.claude/settings.local.json
+
+# Shell history
+.zsh_history
+.bash_history
+.lesshst
+
+# macOS system files
+.DS_Store
+.CFUserTextEncoding
+.Trash/
+.localized
+
+# Large runtimes & caches
+.pyenv/
+.npm/
+.cache/
+.local/share/
+.ollama/
+
+# Application data
+.docker/
+.BurpSuite/
+.n8n/
+.warp/
+.parallels-desktop-vscode/
+.ruvector/
+.swarm/
+.claude-flow/
+.zsh_sessions/
+
+# Databases
+*.db
+*.sqlite
+
+# macOS user folders
+Desktop/
+Documents/
+Downloads/
+Movies/
+Music/
+Pictures/
+Public/
+Applications/
+Library/
+Parallels/
+
+# Other projects (tracked in their own repos)
+autoresearch-mlx/
+autoResearch/
+radius360/
+vorim-project/
+security_test_tool/
