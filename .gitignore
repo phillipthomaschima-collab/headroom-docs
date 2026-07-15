@@ -6,10 +6,21 @@
 .gnupg/
 .netrc
 
-# Claude / agent session state
+# Claude / agent session state (track only .claude/settings.json)
 .claude.json
-.claude/projects/
-.claude/settings.local.json
+.claude/*
+!.claude/settings.json
+
+# Dev tools & agent runtime dirs
+.agents/
+.codex/
+.copilot/
+.homebrew/
+.semgrep/
+.safety/
+.config/
+.local/
+my-projects/
 
 # Shell history
 .zsh_history
