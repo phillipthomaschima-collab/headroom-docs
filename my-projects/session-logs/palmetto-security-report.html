@@ -1,0 +1,1016 @@
+
+<title>Palmetto Clean Technology — Cybersecurity Health Report</title>
+<style>
+/* ── Tokens ───────────────────────────────────────────────────────── */
+:root {
+  --bg:        #0D1117;
+  --surface:   #161B22;
+  --surface2:  #1C2128;
+  --border:    #30363D;
+  --txt:       #E6EDF3;
+  --txt2:      #8B949E;
+  --txt3:      #6E7681;
+  --accent:    #FF6A13;
+  --accent-lo: rgba(255,106,19,.12);
+  --crit:      #FF453A;
+  --high:      #FF9F0A;
+  --med:       #FFD60A;
+  --low:       #30D158;
+  --info:      #58A6FF;
+  --crit-lo:   rgba(255,69,58,.15);
+  --high-lo:   rgba(255,159,10,.15);
+  --med-lo:    rgba(255,214,10,.12);
+  --low-lo:    rgba(48,209,88,.12);
+  --radius:    6px;
+  --mono:      'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace;
+  --sans:      'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: light) { :root {
+  --bg:        #F6F8FA;
+  --surface:   #FFFFFF;
+  --surface2:  #F0F2F5;
+  --border:    #D0D7DE;
+  --txt:       #0D1117;
+  --txt2:      #57606A;
+  --txt3:      #8C959F;
+  --accent-lo: rgba(255,106,19,.09);
+}}
+:root[data-theme="light"] {
+  --bg:#F6F8FA; --surface:#FFFFFF; --surface2:#F0F2F5;
+  --border:#D0D7DE; --txt:#0D1117; --txt2:#57606A; --txt3:#8C959F;
+  --accent-lo:rgba(255,106,19,.09);
+}
+:root[data-theme="dark"] {
+  --bg:#0D1117; --surface:#161B22; --surface2:#1C2128;
+  --border:#30363D; --txt:#E6EDF3; --txt2:#8B949E; --txt3:#6E7681;
+  --accent-lo:rgba(255,106,19,.12);
+}
+
+/* ── Reset / base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--txt);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+
+/* ── Header ───────────────────────────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 56px;
+  backdrop-filter: blur(8px);
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-mark {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg { width: 16px; height: 16px; }
+.org-name { font-weight: 600; font-size: .95rem; letter-spacing: -.01em; }
+.report-label {
+  font-size: .75rem; color: var(--txt3);
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.header-right { display: flex; align-items: center; gap: 20px; }
+.header-date { font-size: .8rem; color: var(--txt2); font-variant-numeric: tabular-nums; }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .78rem; font-weight: 500;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--low-lo); color: var(--low);
+  border: 1px solid rgba(48,209,88,.25);
+}
+.status-pill::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--low);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+@media (prefers-reduced-motion: reduce) { .status-pill::before { animation: none; } }
+
+/* ── Main layout ──────────────────────────────────────────────────── */
+.main { max-width: 1200px; margin: 0 auto; padding: 32px 32px 64px; }
+
+/* ── Section header ───────────────────────────────────────────────── */
+.section-eyebrow {
+  font-size: .7rem; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--txt3);
+  margin-bottom: 16px;
+}
+
+/* ── KPI strip ────────────────────────────────────────────────────── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 20px 18px;
+}
+.kpi-label {
+  font-size: .72rem; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--txt3);
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-size: 2.2rem; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
+}
+.kpi-sub {
+  font-size: .75rem; color: var(--txt2);
+  margin-top: 6px;
+}
+.kpi.accent { border-color: var(--accent); }
+.kpi.accent .kpi-value { color: var(--accent); }
+.kpi.good .kpi-value { color: var(--low); }
+.kpi.warn .kpi-value { color: var(--high); }
+.kpi.crit-k .kpi-value { color: var(--crit); }
+
+/* ── Two-column grid ──────────────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── Card ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.card-title {
+  font-size: .85rem; font-weight: 600;
+  margin-bottom: 18px; color: var(--txt);
+}
+
+/* ── Asset table ──────────────────────────────────────────────────── */
+.asset-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.asset-table th {
+  text-align: left; font-size: .68rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--txt3); padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.asset-table td {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.asset-table tr:last-child td { border-bottom: none; }
+.asset-table th + th, .asset-table td + td { padding-left: 16px; }
+.asset-name { font-weight: 500; color: var(--txt); }
+.asset-name small { display: block; font-size: .72rem; color: var(--txt3); font-weight: 400; margin-top: 1px; }
+.cloud-badge {
+  display: inline-block; font-size: .67rem; font-weight: 600;
+  letter-spacing: .06em; padding: 2px 6px;
+  border-radius: 3px; text-transform: uppercase;
+}
+.cloud-gcp { background: rgba(66,133,244,.15); color: #4285F4; }
+.cloud-aws { background: rgba(255,153,0,.15); color: #FF9900; }
+.crit-chip {
+  display: inline-block; font-size: .67rem; font-weight: 600;
+  padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: .04em;
+}
+.chip-high { background: var(--crit-lo); color: var(--crit); }
+.chip-medium { background: var(--high-lo); color: var(--high); }
+.chip-low { background: var(--low-lo); color: var(--low); }
+.public-dot {
+  display: inline-block; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--info); opacity: .8;
+}
+
+/* ── Severity donut ───────────────────────────────────────────────── */
+.donut-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+}
+.donut-svg { width: 160px; height: 160px; display: block; }
+.donut-legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.legend-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .82rem;
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 2px;
+  margin-right: 9px; flex-shrink: 0;
+}
+.legend-label { display: flex; align-items: center; color: var(--txt2); }
+.legend-count { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ── CVE table ────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+table.cve-table {
+  width: 100%; border-collapse: collapse;
+  font-size: .81rem; font-family: inherit;
+}
+.cve-table th {
+  text-align: left; font-size: .68rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--txt3); padding: 0 12px 10px;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.cve-table th:first-child { padding-left: 0; }
+.cve-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.cve-table td:first-child { padding-left: 0; }
+.cve-table tr:last-child td { border-bottom: none; }
+.cve-id {
+  font-family: var(--mono); font-size: .78rem;
+  color: var(--accent); white-space: nowrap;
+}
+.cvss-badge {
+  display: inline-block; font-size: .75rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cvss-10  { background: var(--crit-lo); color: var(--crit); }
+.cvss-9   { background: rgba(255,80,50,.12); color: #FF5032; }
+.cvss-8   { background: var(--high-lo); color: var(--high); }
+.cvss-7   { background: rgba(255,180,10,.12); color: #FFB40A; }
+.cvss-6   { background: var(--med-lo); color: #D4B200; }
+.cvss-na  { background: var(--surface2); color: var(--txt3); }
+.kev-yes  { color: var(--crit); font-weight: 700; }
+.kev-no   { color: var(--txt3); }
+.desc-cell { color: var(--txt2); max-width: 420px; }
+.ssvc-chip {
+  display: inline-block; font-size: .67rem; font-weight: 600;
+  padding: 2px 7px; border-radius: 3px;
+  letter-spacing: .04em; white-space: nowrap;
+}
+.ssvc-act    { background:var(--crit-lo);color:var(--crit); }
+.ssvc-attend { background:var(--high-lo);color:var(--high); }
+.ssvc-track  { background:var(--surface2);color:var(--txt2); }
+
+/* ── Bottom two-col ───────────────────────────────────────────────── */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 700px) { .bottom-grid { grid-template-columns: 1fr; } }
+
+/* ── Feed list ────────────────────────────────────────────────────── */
+.feed-list { display: flex; flex-direction: column; gap: 0; }
+.feed-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .82rem;
+}
+.feed-row:last-child { border-bottom: none; }
+.feed-name { color: var(--txt2); }
+.feed-bar-wrap { flex: 1; margin: 0 14px; }
+.feed-bar-bg {
+  height: 4px; background: var(--surface2);
+  border-radius: 2px; overflow: hidden;
+}
+.feed-bar-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, rgba(255,106,19,.5) 100%);
+}
+.feed-count { font-variant-numeric: tabular-nums; font-weight: 600; font-size: .8rem; color: var(--txt); }
+
+/* ── Recommendations ──────────────────────────────────────────────── */
+.rec-list { display: flex; flex-direction: column; gap: 14px; }
+.rec-item { display: flex; gap: 14px; align-items: flex-start; }
+.rec-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; flex-shrink: 0; margin-top: 1px;
+}
+.rec-icon.r-crit { background: var(--crit-lo); }
+.rec-icon.r-high { background: var(--high-lo); }
+.rec-icon.r-med  { background: var(--med-lo); }
+.rec-icon.r-low  { background: var(--low-lo); }
+.rec-title { font-size: .84rem; font-weight: 600; margin-bottom: 3px; }
+.rec-body  { font-size: .78rem; color: var(--txt2); line-height: 1.5; }
+
+/* ── Print button ─────────────────────────────────────────────────── */
+.print-bar {
+  display: flex; justify-content: flex-end; margin-bottom: 20px;
+}
+.print-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius);
+  padding: 9px 18px; font-size: .82rem; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+  transition: opacity .15s;
+}
+.print-btn:hover { opacity: .88; }
+.print-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Print styles ─────────────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 18mm 16mm 18mm;
+  }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; color: #0D1117 !important; font-size: 11pt; }
+  .header { position: static; border-bottom: 1.5pt solid #D0D7DE; background: #fff !important; }
+  .header, .main { padding: 0; }
+  .main { max-width: 100%; padding: 0; }
+  .print-bar { display: none !important; }
+
+  /* tokens override for print */
+  :root {
+    --bg: #fff; --surface: #fff; --surface2: #F0F2F5;
+    --border: #D0D7DE; --txt: #0D1117; --txt2: #57606A; --txt3: #8C959F;
+    --accent: #FF6A13; --accent-lo: rgba(255,106,19,.07);
+    --crit: #C0392B; --high: #D4700A; --med: #A08000;
+    --low: #1A7F37; --info: #0550AE;
+    --crit-lo: rgba(192,57,43,.08); --high-lo: rgba(212,112,10,.08);
+    --med-lo: rgba(160,128,0,.07); --low-lo: rgba(26,127,55,.08);
+  }
+
+  .kpi-strip { grid-template-columns: repeat(6,1fr); gap: 6pt; }
+  .kpi { padding: 10pt 10pt 8pt; page-break-inside: avoid; }
+  .kpi-value { font-size: 18pt; }
+
+  .exec-summary { grid-template-columns: 1fr 160pt; gap: 20pt; page-break-inside: avoid; }
+  .two-col { grid-template-columns: 1fr 200pt; gap: 10pt; }
+  .bottom-grid { grid-template-columns: 1fr 1fr; gap: 10pt; }
+
+  .card { border: 1pt solid #D0D7DE; padding: 14pt; page-break-inside: avoid; }
+  .section-gap { margin-top: 14pt; }
+
+  .status-pill { display: none; }
+  .good-banner { padding: 8pt 12pt; margin-bottom: 10pt; }
+
+  .cve-table { font-size: 8pt; }
+  .cve-table th, .cve-table td { padding: 5pt 8pt; }
+  .desc-cell { max-width: 260pt; }
+
+  .feed-row { padding: 6pt 0; }
+  .rec-item { page-break-inside: avoid; }
+  .footer { margin-top: 20pt; padding-top: 12pt; font-size: 8pt; }
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.footer {
+  margin-top: 48px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-left { font-size: .75rem; color: var(--txt3); }
+.footer-right { font-size: .75rem; color: var(--txt3); }
+.footer-logo { display: flex; align-items: center; gap: 8px; }
+.footer-logo span { color: var(--accent); font-weight: 700; }
+
+/* ── Executive summary ────────────────────────────────────────────── */
+.exec-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 700px) { .exec-summary { grid-template-columns: 1fr; } }
+.exec-body { }
+.exec-title {
+  font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em;
+  margin-bottom: 14px; text-wrap: balance;
+}
+.exec-para {
+  font-size: .85rem; color: var(--txt2); line-height: 1.7;
+  margin-bottom: 10px;
+}
+.exec-para:last-child { margin-bottom: 0; }
+.exec-para strong { color: var(--txt); font-weight: 600; }
+.exec-verdict {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin-top: 18px;
+}
+.exec-verdict-label {
+  font-size: .67rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+}
+.exec-verdict-text {
+  font-size: .82rem; color: var(--txt2); line-height: 1.6;
+}
+.exec-scorecard {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.score-row {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.score-label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: .72rem;
+}
+.score-name { color: var(--txt3); text-transform: uppercase; letter-spacing: .07em; font-weight: 500; }
+.score-val  { font-weight: 700; font-size: .78rem; font-variant-numeric: tabular-nums; }
+.score-bar-bg {
+  height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden;
+}
+.score-bar-fill { height: 100%; border-radius: 3px; }
+.score-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+/* ── Divider ──────────────────────────────────────────────────────── */
+.section-gap { margin-top: 32px; }
+
+/* ── No-kev banner ────────────────────────────────────────────────── */
+.good-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--low-lo); border: 1px solid rgba(48,209,88,.25);
+  border-radius: var(--radius); padding: 12px 18px;
+  font-size: .82rem; color: var(--low); margin-bottom: 16px;
+}
+.good-banner strong { font-weight: 600; }
+</style>
+
+<!-- ── HEADER ──────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" fill="white" fill-opacity=".9"/>
+      </svg>
+    </div>
+    <span class="org-name">Palmetto Clean Technology</span>
+    <span class="report-label">Cybersecurity Health Report</span>
+  </div>
+  <div class="header-right">
+    <span class="header-date">2026-07-16 &nbsp;·&nbsp; Generated by XORCISM</span>
+    <span class="status-pill">No active KEV exposure</span>
+  </div>
+</header>
+
+<!-- ── MAIN ───────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Print bar -->
+  <div class="print-bar">
+    <button class="print-btn" onclick="window.print()">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4V2h8v2M4 12H2V7a1 1 0 011-1h10a1 1 0 011 1v5h-2m-6 0v2h4v-2M4 12h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Export PDF
+    </button>
+  </div>
+
+  <!-- Executive summary -->
+  <div class="exec-summary">
+    <div class="exec-body">
+      <div class="exec-title">Cybersecurity Posture — Executive Summary</div>
+      <p class="exec-para">
+        This report covers the cybersecurity health of Palmetto Clean Technology's cloud infrastructure as of <strong>16 July 2026</strong>. The assessment spans <strong>19 assets</strong> across Google Cloud Platform and Amazon Web Services, drawn from the <code style="font-family:var(--mono);font-size:.8em">palmetto-solar-d6a95</code> GCP project and the us-east-2 AWS environment. Assets include the Palmetto Solar customer platform (Firebase, App Engine, Firestore), mobile apps (Android, iOS, Web), data stores (BigQuery, Cloud Storage), IAM identities, and core AWS network infrastructure.
+      </p>
+      <p class="exec-para">
+        XORCISM matched <strong>306 unique CVEs</strong> against these assets using the NVD vulnerability database (28,359 entries, current to July 2026). Of those, <strong>51 are rated Critical</strong> (CVSS ≥ 9.0) and <strong>124 are rated High</strong>. The predominant risk theme is the <strong>Node.js ecosystem</strong> — the bulk of critical-severity findings target the vm2 sandbox library and Node.js runtime itself, both of which underpin the App Engine backend and Firebase Web platform. A second cluster targets <strong>Google BigQuery authorization controls</strong>, relevant to Palmetto's analytics datasets which contain customer PII.
+      </p>
+      <p class="exec-para">
+        The positive headline is that <strong>zero CVEs are flagged as CISA Known Exploited (KEV)</strong>, and no assets are rated SSVC Act or Attend — meaning no evidence of active exploitation in the wild has been associated with Palmetto's specific exposure profile. This does not reduce urgency on the Node.js findings, but it does mean there is no emergency requiring immediate incident response.
+      </p>
+      <p class="exec-para">
+        The AWS footprint visible in this report is thin — only default VPC plumbing was captured in the export. If workloads (EC2, RDS, Lambda) exist in us-east-2 or other regions, they are not yet represented in this risk model and should be added in the next inventory cycle.
+      </p>
+      <div class="exec-verdict">
+        <div class="exec-verdict-label">Recommended action</div>
+        <div class="exec-verdict-text">Initiate a Node.js dependency audit across App Engine and Firebase Web; rotate all service account keys; apply BigQuery IAM review. These three actions address the majority of scored critical and high findings. No emergency response posture is required at this time.</div>
+      </div>
+    </div>
+
+    <div class="exec-scorecard">
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Posture grade</span>
+          <span class="score-val" style="color:var(--accent)">A / 100</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:100%;background:var(--accent)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Critical CVEs</span>
+          <span class="score-val" style="color:var(--crit)">51</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:100%;background:var(--crit)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">High CVEs</span>
+          <span class="score-val" style="color:var(--high)">124</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%;background:var(--high)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Medium CVEs</span>
+          <span class="score-val" style="color:var(--med)">87</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:56%;background:var(--med)"></div></div>
+      </div>
+      <div class="score-divider"></div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">KEV exposure</span>
+          <span class="score-val" style="color:var(--low)">0 ✓</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%;background:var(--crit)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">SSVC Act/Attend</span>
+          <span class="score-val" style="color:var(--low)">0 ✓</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%;background:var(--crit)"></div></div>
+      </div>
+      <div class="score-divider"></div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Insurance readiness</span>
+          <span class="score-val" style="color:var(--high)">D / 51</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:51%;background:var(--high)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Feed coverage</span>
+          <span class="score-val" style="color:var(--low)">33 / 33</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:100%;background:var(--low)"></div></div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">
+          <span class="score-name">Assets monitored</span>
+          <span class="score-val">19</span>
+        </div>
+        <div class="score-bar-bg"><div class="score-bar-fill" style="width:65%;background:var(--info)"></div></div>
+      </div>
+      <div style="margin-top:4px;font-size:.68rem;color:var(--txt3);line-height:1.5">
+        Posture score reflects CROC risk engine output. Insurance readiness gap: secure tested backups (3-2-1 rule).
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi accent">
+      <div class="kpi-label">Assets Monitored</div>
+      <div class="kpi-value">19</div>
+      <div class="kpi-sub">GCP (15) · AWS (4)</div>
+    </div>
+    <div class="kpi crit-k">
+      <div class="kpi-label">Unique CVEs Linked</div>
+      <div class="kpi-value">306</div>
+      <div class="kpi-sub">901 asset-CVE links total</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Critical Severity</div>
+      <div class="kpi-value">51</div>
+      <div class="kpi-sub">CVSS ≥ 9.0</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">High Severity</div>
+      <div class="kpi-value">124</div>
+      <div class="kpi-sub">CVSS 7.0 – 8.9</div>
+    </div>
+    <div class="kpi good">
+      <div class="kpi-label">KEV Exposure</div>
+      <div class="kpi-value">0</div>
+      <div class="kpi-sub">No known-exploited CVEs</div>
+    </div>
+    <div class="kpi good">
+      <div class="kpi-label">Threat Feeds</div>
+      <div class="kpi-value">33</div>
+      <div class="kpi-sub">All polling · 278 reports</div>
+    </div>
+  </div>
+
+  <!-- Good news banner -->
+  <div class="good-banner">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.5 5.5H14.5L10.5 8.5L12 13L8 10L4 13L5.5 8.5L1.5 5.5H6.5L8 1Z" fill="currentColor"/></svg>
+    <div><strong>No critical urgency:</strong> Zero CVEs flagged as CISA Known Exploited (KEV), and zero assets rated SSVC Act or Attend. The exposure below is real and warrants remediation planning, but no emergency response is required today.</div>
+  </div>
+
+  <!-- Asset inventory + Severity donut -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Asset Inventory — Cloud Infrastructure</div>
+      <div style="overflow-x:auto;">
+        <table class="asset-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Cloud</th>
+              <th>Criticality</th>
+              <th>Public</th>
+              <th style="text-align:right">CVEs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="asset-name">Palmetto Solar (Firebase)<small>Firebase project · mobile &amp; web backend</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td><span class="public-dot" title="Internet-facing"></span></td>
+              <td style="text-align:right;font-weight:600">283</td>
+            </tr>
+            <tr>
+              <td class="asset-name">App Engine — palmetto-solar-d6a95<small>Serverless app backend · us-central</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td><span class="public-dot"></span></td>
+              <td style="text-align:right;font-weight:600">278</td>
+            </tr>
+            <tr>
+              <td class="asset-name">Firestore Database (default)<small>Primary NoSQL database · nam5</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td></td>
+              <td style="text-align:right;color:var(--txt3)">—</td>
+            </tr>
+            <tr>
+              <td class="asset-name">Service Account — firebase-adminsdk<small>High-privilege IAM identity</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td></td>
+              <td style="text-align:right;color:var(--txt3)">—</td>
+            </tr>
+            <tr>
+              <td class="asset-name">Service Account — App Engine default<small>Editor-level project permissions</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td></td>
+              <td style="text-align:right;font-weight:600">1</td>
+            </tr>
+            <tr>
+              <td class="asset-name">AWS Security Group — sg-06bc5f0c2e46eebe3<small>Traffic control · us-east-2</small></td>
+              <td><span class="cloud-badge cloud-aws">AWS</span></td>
+              <td><span class="crit-chip chip-high">High</span></td>
+              <td></td>
+              <td style="text-align:right;color:var(--txt3)">—</td>
+            </tr>
+            <tr>
+              <td class="asset-name">Firebase App — Palmetto Web<small>Customer web portal · Firebase hosting</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-medium">Medium</span></td>
+              <td><span class="public-dot"></span></td>
+              <td style="text-align:right;font-weight:600">283</td>
+            </tr>
+            <tr>
+              <td class="asset-name">BigQuery — analytics_168177260<small>Firebase analytics export · PII</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-medium">Medium</span></td>
+              <td></td>
+              <td style="text-align:right;font-weight:600">4</td>
+            </tr>
+            <tr>
+              <td class="asset-name">GCS Bucket — palmetto-solar-d6a95.appspot.com<small>App storage · PII-hosting</small></td>
+              <td><span class="cloud-badge cloud-gcp">GCP</span></td>
+              <td><span class="crit-chip chip-medium">Medium</span></td>
+              <td></td>
+              <td style="text-align:right;font-weight:600">18</td>
+            </tr>
+            <tr>
+              <td class="asset-name">AWS VPC — vpc-0da4bef1e8b24cd9f<small>Network boundary · us-east-2</small></td>
+              <td><span class="cloud-badge cloud-aws">AWS</span></td>
+              <td><span class="crit-chip chip-medium">Medium</span></td>
+              <td></td>
+              <td style="text-align:right;color:var(--txt3)">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:.72rem;color:var(--txt3);margin-top:12px">Showing 10 of 19 assets. 9 additional assets carry no matched CVEs.</div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;gap:0">
+      <div class="card-title">Severity Distribution</div>
+      <div class="donut-wrap" style="flex:1;justify-content:center">
+        <svg class="donut-svg" viewBox="0 0 160 160">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- bg ring -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke-width="18" stroke="var(--surface2)"/>
+          <!-- Critical 51/306 = 16.7% → 60° -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke-width="18"
+            stroke="var(--crit)" stroke-dasharray="60.9 303.8"
+            stroke-dashoffset="0" transform="rotate(-90 80 80)" filter="url(#glow)"/>
+          <!-- High 124/306 = 40.5% → 147.9° -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke-width="18"
+            stroke="var(--high)" stroke-dasharray="147.9 216.8"
+            stroke-dashoffset="-60.9" transform="rotate(-90 80 80)"/>
+          <!-- Medium 87/306 = 28.4% → 103.6° -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke-width="18"
+            stroke="var(--med)" stroke-dasharray="103.6 261.1"
+            stroke-dashoffset="-208.8" transform="rotate(-90 80 80)"/>
+          <!-- Low/unknown 44 = 14.4% → 52.5° -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke-width="18"
+            stroke="var(--txt3)" stroke-dasharray="52.5 312.2"
+            stroke-dashoffset="-312.4" transform="rotate(-90 80 80)"/>
+          <!-- Center text -->
+          <text x="80" y="74" text-anchor="middle" fill="var(--txt)"
+            font-family="-apple-system,system-ui,sans-serif"
+            font-size="26" font-weight="700" letter-spacing="-1">306</text>
+          <text x="80" y="91" text-anchor="middle" fill="var(--txt3)"
+            font-family="-apple-system,system-ui,sans-serif"
+            font-size="10" letter-spacing=".5">UNIQUE CVEs</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--crit)"></span>Critical (CVSS ≥ 9)</span>
+            <span class="legend-count" style="color:var(--crit)">51</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--high)"></span>High (CVSS 7–8.9)</span>
+            <span class="legend-count" style="color:var(--high)">124</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--med)"></span>Medium (CVSS 4–6.9)</span>
+            <span class="legend-count" style="color:var(--med)">87</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--txt3)"></span>Low / unscored</span>
+            <span class="legend-count" style="color:var(--txt3)">44</span>
+          </div>
+          <div style="height:1px;background:var(--border);margin:6px 0"></div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--low)"></span>KEV (known exploited)</span>
+            <span class="legend-count" style="color:var(--low)">0 ✓</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:var(--low)"></span>SSVC Act / Attend</span>
+            <span class="legend-count" style="color:var(--low)">0 ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CVE table -->
+  <div class="card section-gap">
+    <div class="card-title">Top Vulnerabilities — Prioritised by CVSS &amp; Confidence</div>
+    <div class="table-wrap">
+      <table class="cve-table">
+        <thead>
+          <tr>
+            <th>CVE</th>
+            <th>CVSS</th>
+            <th>SSVC</th>
+            <th>KEV</th>
+            <th>Technology</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cve-id">CVE-2026-41679</td>
+            <td><span class="cvss-badge cvss-10">10.0</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js</td>
+            <td class="desc-cell">Unauthenticated RCE via AI agent orchestration server built on Node.js (Paperclip). Pre-auth remote code execution.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-43997</td>
+            <td><span class="cvss-badge cvss-10">10.0</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js / vm2</td>
+            <td class="desc-cell">vm2 sandbox escape — attacker can obtain host Object and execute arbitrary code outside the Node.js sandbox.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-44005</td>
+            <td><span class="cvss-badge cvss-10">10.0</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js / vm2</td>
+            <td class="desc-cell">vm2 mutable proxy exposure — bridge forwards sandbox writes into host-realm intrinsic prototypes enabling full escape.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-44006</td>
+            <td><span class="cvss-badge cvss-10">10.0</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js / vm2</td>
+            <td class="desc-cell">vm2 prototype access via BaseHandler.getPrototypeOf — arbitrary prototype chain manipulation leading to sandbox breakout.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-47208</td>
+            <td><span class="cvss-badge cvss-10">10.0</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js / vm2</td>
+            <td class="desc-cell">vm2 sandbox breakout — attacker can escape VM2 isolation and interact directly with the host Node.js process.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-48930</td>
+            <td><span class="cvss-badge cvss-9">9.8</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js</td>
+            <td class="desc-cell">Node.js TLS hostname flaw — Embedded-null byte bypass can cause incorrect host validation in TLS connections.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-32731</td>
+            <td><span class="cvss-badge cvss-9">9.9</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js</td>
+            <td class="desc-cell">ApostropheCMS path traversal in gzip.js — arbitrary file write via crafted archive extraction path.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2025-62718</td>
+            <td><span class="cvss-badge cvss-9">9.9</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Node.js / Axios</td>
+            <td class="desc-cell">Axios ≤ 1.14.0 — hostname normalisation flaw bypasses NO_PROXY rules; SSRF potential via loopback addresses.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-42811</td>
+            <td><span class="cvss-badge cvss-9">9.9</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Google Cloud (GCS)</td>
+            <td class="desc-cell">Apache Polaris GCS credential scope leak — crafted table/namespace name causes cross-table GCS credentials to be issued.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-12879</td>
+            <td><span class="cvss-badge cvss-na">—</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Google BigQuery</td>
+            <td class="desc-cell">BigQuery DAO — sensitive information exposed in error messages; authenticated user can potentially exfiltrate cross-tenant data.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-14934</td>
+            <td><span class="cvss-badge cvss-na">—</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Google BigQuery</td>
+            <td class="desc-cell">BigQuery / Dataform / Colab Enterprise — missing authorization in repository creation (Oct 2025 – May 2026).</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-8934</td>
+            <td><span class="cvss-badge cvss-na">—</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Google BigQuery</td>
+            <td class="desc-cell">Missing authorization on GraphQL private API endpoint in Google Cloud BigQuery service.</td>
+          </tr>
+          <tr>
+            <td class="cve-id">CVE-2026-3259</td>
+            <td><span class="cvss-badge cvss-na">—</span></td>
+            <td><span class="ssvc-chip ssvc-track">Track</span></td>
+            <td class="kev-no">—</td>
+            <td>Google BigQuery</td>
+            <td class="desc-cell">BigQuery Materialized View Refresh — error messages leak sensitive information to authenticated users.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:.72rem;color:var(--txt3);margin-top:12px">
+      306 unique CVEs matched across 10 assets. 59 High-confidence (CPE-verified) links · 842 Medium-confidence links. SSVC scoring: all currently rated Track (no immediate exploitation path detected). KEV status sourced from CISA Known Exploited Vulnerabilities Catalogue v2026.07.16.
+    </div>
+  </div>
+
+  <!-- Bottom grid -->
+  <div class="bottom-grid">
+
+    <!-- Threat feeds -->
+    <div class="card">
+      <div class="card-title">Threat Intelligence Feeds</div>
+      <div class="feed-list">
+        <div class="feed-row">
+          <span class="feed-name">The Hacker News</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:100%"></div></div></div>
+          <span class="feed-count">26</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">CISA Advisories</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:88%"></div></div></div>
+          <span class="feed-count">23</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">BleepingComputer</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:88%"></div></div></div>
+          <span class="feed-count">23</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">The Register — Security</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:73%"></div></div></div>
+          <span class="feed-count">19</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">CERT-FR (ANSSI)</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:73%"></div></div></div>
+          <span class="feed-count">19</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">Dark Reading</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:65%"></div></div></div>
+          <span class="feed-count">17</span>
+        </div>
+        <div class="feed-row">
+          <span class="feed-name">Security Affairs</span>
+          <div class="feed-bar-wrap"><div class="feed-bar-bg"><div class="feed-bar-fill" style="width:62%"></div></div></div>
+          <span class="feed-count">16</span>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:.75rem;color:var(--txt3)">
+        33 / 33 feeds active &nbsp;·&nbsp; 278 threat reports ingested &nbsp;·&nbsp; Last poll: 2026-07-16 14:38 UTC
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="card">
+      <div class="card-title">Remediation Priorities</div>
+      <div class="rec-list">
+        <div class="rec-item">
+          <div class="rec-icon r-crit">🔴</div>
+          <div>
+            <div class="rec-title">Audit Node.js version &amp; sandbox dependencies</div>
+            <div class="rec-body">The majority of critical-rated CVEs (CVSS 10.0) target Node.js and the vm2 sandbox library. Verify your App Engine runtime version, audit all npm dependencies for vm2 or outdated Axios, and apply patches or replace abandoned packages.</div>
+          </div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-icon r-crit">🔴</div>
+          <div>
+            <div class="rec-title">Rotate &amp; audit IAM service account keys</div>
+            <div class="rec-body">5 active keys found for <code style="font-family:var(--mono);font-size:.75em">firebase-adminsdk</code>. High-privilege service accounts with stale keys are a common lateral movement vector. Audit, rotate, and enforce key expiry policy.</div>
+          </div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-icon r-high">🟠</div>
+          <div>
+            <div class="rec-title">Review BigQuery access controls</div>
+            <div class="rec-body">Three CVEs target Google BigQuery authorization (CVE-2026-12879, CVE-2026-14934, CVE-2026-8934). Confirm dataset IAM policies, enable audit logging, and ensure no cross-tenant or over-permissioned bindings exist.</div>
+          </div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-icon r-high">🟠</div>
+          <div>
+            <div class="rec-title">Address cyber insurance gap (Grade D)</div>
+            <div class="rec-body">XORCISM's insurance readiness score is 51/100. Top gap: <em>secure, tested backups (3-2-1 rule)</em>. Implement and test an offsite / immutable backup strategy for Firestore and GCS to close the largest coverage gap.</div>
+          </div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-icon r-med">🟡</div>
+          <div>
+            <div class="rec-title">Complete AWS asset tagging &amp; expand inventory</div>
+            <div class="rec-body">Current AWS export shows only default VPC plumbing (9 resources, none tagged). Re-run Tag Editor across all regions — expected workloads (EC2, RDS, Lambda) are missing from the risk model.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-logo">
+        <div class="logo-mark" style="width:20px;height:20px;border-radius:4px">
+          <svg viewBox="0 0 16 16" fill="none" style="width:11px;height:11px"><path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" fill="white" fill-opacity=".9"/></svg>
+        </div>
+        <span>Generated by <span>XORCISM</span> · Palmetto Clean Technology · 2026-07-16</span>
+      </div>
+    </div>
+    <div class="footer-right">
+      NVD CVE data current as of 2026-07-16 &nbsp;·&nbsp; CISA KEV catalogue v2026.07.16 (1,647 entries) &nbsp;·&nbsp; SSVC scoring: CISA Track/Track*/Attend/Act
+    </div>
+  </div>
+
+</main>
