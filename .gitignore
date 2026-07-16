@@ -20,7 +20,8 @@
 .safety/
 .config/
 .local/
-my-projects/
+my-projects/*
+!my-projects/session-logs
 
 # Shell history
 .zsh_history
